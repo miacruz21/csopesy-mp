@@ -1,77 +1,78 @@
 #include <iostream>
 #include <string>
-#include <algorithm>
-#include <cstdlib>
+#ifdef _WIN32
+#include <cstdlib> // For system("cls")
+#else
+#include <unistd.h>
+#endif
 
-void clearScreen(const std::string& header) {
-    #ifdef _WIN32
-        system("cls");
-    #else
-        system("clear");
-    #endif
-    
-    std::cout << header << "\n\n";
+using namespace std;
+
+// Function to display the ASCII Header
+void printHeader() {
+    const std::string COLOR_GREEN = "\033[32m";
+    const std::string COLOR_YELLOW = "\033[93m";
+    const std::string COLOR_RESET = "\033[0m";
+
+    cout << COLOR_RESET;
+    cout << R"( 
+  _____  _____  ____  _____  ______  _______     __
+ / ____|/ ____|/ __ \|  __ \|  ____|/ ____\ \   / /
+| |    | (___ | |  | | |__) | |__  | (___  \ \_/ / 
+| |     \___ \| |  | |  ___/|  __|  \___ \  \   /  
+| |____ ____) | |__| | |    | |____ ____) |  | |   
+ \_____|_____/ \____/|_|    |______|_____/   |_|   
+)";
+    cout << "\n ==========================" << endl;
+    cout << "\n Hello, Welcome to CSOPESY commandline!\n" << COLOR_GREEN;
+    cout << "\n Developers: \n Abergos, Mark Gabriel  \n Arca, Althea Denisse\n Cruz,Mia Bernice \n Del Mundo, Rahmon Khayle !\n" << COLOR_RESET;
+    cout << "\n Last Updated: 05-16-2025 \n" << COLOR_RESET;
+    cout << "\n ==========================\n " << endl;
+    cout << COLOR_YELLOW << "Type 'exit' to quit, 'clear' to clear the screen\n" << COLOR_YELLOW;
+    cout << COLOR_RESET;
+}
+
+void clearScreen() {
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+    printHeader();
 }
 
 int main() {
-    const std::string COLOR_GREEN = "\033[32m";
-    const std::string COLOR_LIGHT_YELLOW = "\033[93m";
-    const std::string COLOR_RESET = "\033[0m";
-    const std::string header = 
-        R"(
-   _____  _____  ____  _____  ______  _______     __
-  / ____|/ ____|/ __ \|  __ \|  ____|/ ____\ \   / /
- | |    | (___ | |  | | |__) | |__  | (___  \ \_/ / 
- | |     \___ \| |  | |  ___/|  __|  \___ \  \   /  
- | |____ ____) | |__| | |    | |____ ____) |  | |   
-  \_____|_____/ \____/|_|    |______|_____/   |_|   
-)"
-        + std::string(COLOR_GREEN) + "Hello, Welcome to CSOPESY commandline!\n" + COLOR_RESET
-        + COLOR_LIGHT_YELLOW + "Type 'exit' to quit, 'clear' to clear the screen\n" + COLOR_RESET;
-
-    std::cout << header << "\n";
-    
-    bool initialized = false;
-    std::string input;
+    string command;
+    printHeader();
 
     while (true) {
-        std::cout << "> ";
-        std::getline(std::cin, input);
+        cout << "Enter command: ";
+        getline(cin, command);
 
-        std::transform(input.begin(), input.end(), input.begin(), 
-                      [](unsigned char c){ return std::tolower(c); });
-
-        if (input == "exit") {
-            std::exit(0);
+        if (command == "initialize") {
+            cout << "initialize command recognized. Doing something." << endl;
         }
-
-        if (!initialized && input != "initialize") {
-            std::cout << "Error: You must initialize first with 'initialize' command.\n";
-            continue;
+        else if (command == "screen") {
+            cout << "screen command recognized. Doing something." << endl;
         }
-
-        if (input == "initialize") {
-            std::cout << "initialize command recognized. Initializing system...\n";
-            initialized = true;
+        else if (command == "scheduler-test") {
+            cout << "scheduler-test command recognized. Doing something." << endl;
         }
-        else if (input == "clear") {
-            clearScreen(header);
+        else if (command == "scheduler-stop") {
+            cout << "scheduler-stop command recognized. Doing something." << endl;
         }
-        else if (input == "screen") {
-            std::cout << "screen command recognized. Doing something...\n";
+        else if (command == "report-util") {
+            cout << "report-util command recognized. Doing something." << endl;
         }
-        else if (input == "scheduler-start") {
-            std::cout << "scheduler-start command recognized. Doing something...\n";
+        else if (command == "clear") {
+            clearScreen();
         }
-        else if (input == "scheduler-stop") {
-            std::cout << "scheduler-stop command recognized. Doing something...\n";
-        }
-        else if (input == "report-util") {
-            std::cout << "report-util command recognized. Doing something...\n";
+        else if (command == "exit") {
+            cout << "Exiting the program." << endl;
+            break;
         }
         else {
-            std::cout << "Error: Unrecognized command. Available commands: initialize, screen, "
-                      << "scheduler-start, scheduler-stop, report-util, clear, exit\n";
+            cout << "Unknown command. Please try again." << endl;
         }
     }
 

@@ -1,6 +1,23 @@
 #include "console.hpp"
 #include <iostream>
 #include <algorithm>
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+// Enable ANSI escape codes on Windows
+void enable_virtual_terminal_processing() {
+#ifdef _WIN32
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hOut != INVALID_HANDLE_VALUE) {
+        DWORD dwMode = 0;
+        if (GetConsoleMode(hOut, &dwMode)) {
+            dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+            SetConsoleMode(hOut, dwMode);
+        }
+    }
+#endif
+}
 
 const std::string COLOR_GREEN = "\033[32m";
 const std::string COLOR_LIGHT_YELLOW = "\033[93m";
@@ -83,6 +100,7 @@ void Console::handle_screen_command(const std::string& command) {
 }
 
 void Console::run() {
+    enable_virtual_terminal_processing();
     print_header();
     
     std::string input;

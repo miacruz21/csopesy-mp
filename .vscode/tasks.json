@@ -5,7 +5,15 @@
       "label": "Build C++",
       "type": "shell",
       "command": "C:/msys64/ucrt64/bin/g++.exe",
-      "args": ["-g", "main.cpp", "-o", "main.exe"],
+      "args": [
+                "-std=c++17",
+                "-g",
+                "main.cpp",
+                "console.cpp",
+                "process.cpp",
+                "-o",
+                "csopesy.exe"
+            ],
       "group": {
         "kind": "build",
         "isDefault": true

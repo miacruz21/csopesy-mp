@@ -2,10 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug main.exe (MinGW)",
+      "name": "Debug csopesy.exe (MinGW)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/main.exe",
+      "program": "${workspaceFolder}/csopesy.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

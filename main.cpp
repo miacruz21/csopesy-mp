@@ -1,5 +1,6 @@
 #include "console.hpp"
 #include "process.hpp"
+#include "process_manager.hpp"
 #include <vector>
 #include <unordered_map>
 #include <random>
@@ -12,64 +13,26 @@ int generate_pid() {
 }
 
 int main() {
-    std::vector<ProcessScreen> processes;
-    std::unordered_map<std::string, ProcessScreen*> process_map;
+    ProcessManager manager;
 
-    processes.emplace_back("process_1", 100, generate_pid());
-    processes.emplace_back("process_2", 100, generate_pid());
-    processes.emplace_back("process_3", 100, generate_pid());
+    manager.add_process("process_1");
+    manager.add_process("process_2");
+    manager.add_process("process_3");
 
-    // Assign cores and populate map
-    for (size_t i = 0; i < processes.size(); ++i) {
-        processes[i].set_core(static_cast<int>(i % 2)); // Assuming 2 cores
-        process_map[processes[i].get_name()] = &processes[i];
+    // Execute some steps
+    for (int i = 0; i < 5; i++) {
+        manager.execute_all();
     }
 
-    // Simulate execution
-    for (auto& proc : processes) {
-        proc.execute_next(); // Execute one instruction
-    }
-
-    // --- System Status ---
-    int used_cores = 0;
-    for (const auto& proc : processes) {
-        if (!proc.is_finished()) {
-            used_cores++;
-        }
-    }
-    int total_cores = 2; // Assuming 2 cores
-    int utilization = (used_cores * 100) / total_cores;
-
-    std::cout << "CPU Utilization: " << utilization << "%\n";
-    std::cout << "Cores used: " << used_cores << "\n";
-    std::cout << "Cores available: " << (total_cores - used_cores) << "\n\n";
-    std::cout << "---------------------------------------------\n";
-    
-    // Show running processes
-    std::cout << "Running processes:\n";
-    for (const auto& proc : processes) {
-        if (!proc.is_finished()) {
-            proc.print_status();
-        }
-    }
-
-    // Show finished processes
-    std::cout << "\nFinished processes:\n";
-    for (const auto& proc : processes) {
-        if (proc.is_finished()) {
-            proc.print_status();
-        }
-    }
-    std::cout << "--------------------------------\n";
+    manager.print_system_status();
 
     // Demo O(1) access
-    if (process_map.count("process_1")) {
+    if (auto proc = manager.get_process("process_1")) {
         std::cout << "\nFound process_1 in O(1) time:\n";
-        process_map["process_1"]->print_status();
+        proc->print_status();
     }
 
     Console console;
     console.run();
-
     return 0;
 }

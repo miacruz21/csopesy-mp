@@ -1,7 +1,7 @@
 #include "process.hpp"
 #include <iostream>
 
-ProcessScreen::ProcessScreen(const std::string& name, int total_instructions, int pid) 
+ProcessScreen::ProcessScreen(const std::string& name, int total_instructions) 
     : name(name), total_instructions(total_instructions), current_instruction(0) 
 {
     created_time = std::chrono::system_clock::to_time_t(

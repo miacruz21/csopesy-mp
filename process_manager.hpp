@@ -6,8 +6,8 @@
 
 class ProcessManager {
 private:
-    std::vector<std::unique_ptr<ProcessScreen>> processes;  // Owns processes
-    std::unordered_map<std::string, ProcessScreen*> process_map;  // For O(1) access
+    std::vector<std::unique_ptr<ProcessScreen>> processes;
+    std::unordered_map<std::string, ProcessScreen*> process_map;
     int total_cores = 2;
     int next_core = 0;
 

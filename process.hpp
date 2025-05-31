@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <vector>
 #include <iostream>
+#include "utils.hpp"
 
 class ProcessScreen {
 private:
@@ -14,25 +15,42 @@ private:
     int total_instructions;
     std::vector<std::string> logs;
     bool finished = false;
-    int core_id = -1; 
+    int core_id = -1;
+    int pid;
+    std::string type = "C+G";
+
     
 public:
-    ProcessScreen(const std::string& name, int total_instructions = 10);
+    ProcessScreen(const std::string& name, int total_instructions = 10, int pid = -1);
     void show_info() const;
     void interact();
     void add_log(const std::string& message);
+    int get_pid() const { return pid; }
+    const std::string& get_type() const { return type; }
 
-    // Add: Print process status in the required format
     void print_status() const {
-        std::tm* tm_ptr = std::localtime(&created_time);
-        std::cout << name << "    ("
-                  << std::put_time(tm_ptr, "%m/%d/%y %H:%M:%S") << ")"
-                  << "  Core: " << core_id
-                  << " " << current_instruction << " / " << total_instructions
-                  << std::endl;
+        char time_str[100];
+        std::strftime(time_str, sizeof(time_str), "%m/%d/%y %I:%M:%S %p", std::localtime(&created_time));
+        
+        // Format with fixed widths
+        std::cout << std::setw(20) << std::left << truncate_text(name, 20)
+                << std::setw(8) << std::left << ("(PID: " + std::to_string(pid) + ")")
+                << std::setw(8) << std::left << ("Type: " + type)
+                << std::setw(22) << std::left << ("[" + std::string(time_str) + "]")
+                << "Core: " << core_id << " "
+                << current_instruction << "/" << total_instructions << "\n";
     }
 
-    // Add: Setters and getters for new attributes
+    void execute_next() {
+        if (!finished && current_instruction < total_instructions) {
+            current_instruction++;
+            add_log("Executed instruction " + std::to_string(current_instruction));
+            if (current_instruction >= total_instructions) {
+                finished = true;
+            }
+        }
+    }
+
     void set_core(int id) { core_id = id; }
     int get_core() const { return core_id; }
     int get_current_instruction() const { return current_instruction; }

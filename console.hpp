@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include "process.hpp"
+#include "utils.hpp"    
 
 class Console {
 private:

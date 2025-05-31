@@ -100,33 +100,58 @@ void Console::handle_screen_command(const std::string& command) {
 }
 
 void Console::show_nvidia_smi_dummy() const {
-    std::cout <<
-R"(Fri Mar 29 18:42:38 2024
-+-----------------------------------------------------------------------------------+
-| NVIDIA-SMI 551.86             Driver Version: 551.86       CUDA Version: 12.4     |
-|-------------------------------------+----------------------+----------------------+
-| GPU  Name                 TCC/WDDM  | Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp  Perf       Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
-|                                     |                      | MIG M.               |
-|=====================================+======================+======================|
-|   0  Dummy GeForce GTX 1080    WDDM | 00000000:26:00.0  On |                  N/A |
-| 28%   37C    P8          11W / 180W |     701MiB / 8192MiB |     0%       Default |
-|                                     |                      |                  N/A |
-+-------------------------------------+----------------------+----------------------+
+    std::time_t now = std::time(nullptr);
+    char time_str[100];
+    std::strftime(time_str, sizeof(time_str), "%a %b %d %H:%M:%S %Y", std::localtime(&now));
+    
+    std::cout << time_str << "\n\n";
+    std::cout << "+---------------------------------------------------------------------------------------+\n";
+    std::cout << "| NVIDIA-SMI 546.92                 Driver Version: 546.92       CUDA Version: 12.3     |\n";
+    std::cout << "|-----------------------------------------+----------------------+----------------------+\n";
+    std::cout << "| GPU  Name                     TCC/WDDM  | Bus-Id        Disp.A | Volatile Uncorr. ECC |\n";
+    std::cout << "| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |\n";
+    std::cout << "|                                         |                      |               MIG M. |\n";
+    std::cout << "|=========================================+======================+======================|\n";
+    std::cout << "|   0  NVIDIA GeForce RTX 3060 ...  WDDM  | 00000000:01:00.0  On |                  N/A |\n";
+    std::cout << "| N/A   44C    P5              20W /  95W |   1395MiB /  6144MiB |     19%      Default |\n";
+    std::cout << "|                                         |                      |                  N/A |\n";
+    std::cout << "+-----------------------------------------+----------------------+----------------------+\n\n";
 
-+-----------------------------------------------------------------------------------+
-| Processes:                                                                        |
-|  GPU   GI   CI        PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                         Usage      |
-|===================================================================================|
-|    0   N/A  N/A      1234    C+G   C:\Windows\System32\dwm.exe           100MiB   |
-|    0   N/A  N/A      2345    C+G   ...wekyb3d8bbwe\Xbox.exe              200MiB   |
-|    0   N/A  N/A      3456    C+G   ...on\123.0.2420.65\msedge.exe        150MiB   |
-|    0   N/A  N/A      4567    C+G   C:\Windows\explorer.exe               300MiB   |
-|    0   N/A  N/A      5678    C+G   ...dws.wao23dwas022\SearchHost.exe    250MiB   |
-+-----------------------------------------------------------------------------------+
-)" << std::endl;
+    std::cout << "+---------------------------------------------------------------------------------------+\n";
+    std::cout << "|  Processes:                                                                           |\n";
+    std::cout << "|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |\n";
+    std::cout << "|        ID   ID                                                             Usage      |\n";
+    std::cout << "+=======================================================================================+\n";
+
+    struct Process {
+        int pid;
+        std::string type;
+        std::string name;
+        std::string memory;
+    };
+    
+    std::vector<Process> processes = {
+        {1368, "C+G", "C:\\Windows\\System32\\dwm.exe", "N/A"},
+        {2116, "C+G", "C:\\Users\\User\\AppData\\Local\\Packages\\Microsoft.XboxGamingOverlay_8wekyb3d8bbwe\\xboxGameBarWidgets.exe", "N/A"},
+        {4224, "C+G", "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe", "N/A"},
+        {5684, "C+G", "C:\\Windows\\explorer.exe", "N/A"},
+        {6676, "C+G", "C:\\Windows\\System32\\DriverStore\\FileRepository\\nv_dispi.inf_amd64_neutral_hash\\Display.NvContainer\\NVDisplay.Container.exe", "N/A"},
+        {6700, "C+G", "C:\\Windows\\System32\\DriverStore\\FileRepository\\nv_dispi.inf_amd64_neutral_hash\\Display.NvContainer\\NVDisplay.Container.exe", "N/A"}
+    };
+
+    // Display processes with proper alignment
+    for (const auto& proc : processes) {
+        std::string display_name = truncate_text(proc.name, 38);
+        
+        std::cout << "|    0   N/A  N/A    " 
+                  << std::setw(6) << std::right << proc.pid << "   "
+                  << std::setw(4) << std::right << proc.type << "   "
+                  << std::setw(38) << std::left << display_name << "    "
+                  << std::setw(3) << std::left << proc.memory << "      |\n";
+    }
+    std::cout << "+=======================================================================================+\n\n";
 }
+
 
 void Console::run() {
     enable_virtual_terminal_processing();

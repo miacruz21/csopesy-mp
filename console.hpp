@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include "process.hpp"
+#include "utils.hpp"    
 
 class Console {
 private:
@@ -12,6 +13,7 @@ private:
     void handle_screen_command(const std::string& command);
     void print_header() const;
     void show_help() const;
+    void show_nvidia_smi_dummy() const;
     
 public:
     void run();

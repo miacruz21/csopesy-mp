@@ -99,6 +99,130 @@ void Console::handle_screen_command(const std::string& command) {
     }
 }
 
+// void Console::show_nvidia_smi_dummy() const {
+//     std::time_t now = std::time(nullptr);
+//     char time_str[100];
+//     std::strftime(time_str, sizeof(time_str), "%a %b %d %H:%M:%S %Y", std::localtime(&now));
+    
+//     std::cout << time_str << "\n\n";
+//     std::cout << "+---------------------------------------------------------------------------------------+\n";
+//     std::cout << "| NVIDIA-SMI 546.92                 Driver Version: 546.92       CUDA Version: 12.3     |\n";
+//     std::cout << "|-----------------------------------------+----------------------+----------------------+\n";
+//     std::cout << "| GPU  Name                     TCC/WDDM  | Bus-Id        Disp.A | Volatile Uncorr. ECC |\n";
+//     std::cout << "| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |\n";
+//     std::cout << "|                                         |                      |               MIG M. |\n";
+//     std::cout << "|=========================================+======================+======================|\n";
+//     std::cout << "|   0  NVIDIA GeForce RTX 3060 ...  WDDM  | 00000000:01:00.0  On |                  N/A |\n";
+//     std::cout << "| N/A   44C    P5              20W /  95W |   1395MiB /  6144MiB |     19%      Default |\n";
+//     std::cout << "|                                         |                      |                  N/A |\n";
+//     std::cout << "+-----------------------------------------+----------------------+----------------------+\n\n";
+
+//     std::cout << "+---------------------------------------------------------------------------------------+\n";
+//     std::cout << "|  Processes:                                                                           |\n";
+//     std::cout << "|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |\n";
+//     std::cout << "|        ID   ID                                                             Usage      |\n";
+//     std::cout << "+=======================================================================================+\n";
+
+//     struct Process {
+//         int pid;
+//         std::string type;
+//         std::string name;
+//         std::string memory;
+//     };
+    
+//     std::vector<Process> processes = {
+//         {1368, "C+G", "C:\\Windows\\System32\\dwm.exe", "N/A"},
+//         {2116, "C+G", "C:\\Users\\User\\AppData\\Local\\Packages\\Microsoft.XboxGamingOverlay_8wekyb3d8bbwe\\xboxGameBarWidgets.exe", "N/A"},
+//         {4224, "C+G", "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe", "N/A"},
+//         {5684, "C+G", "C:\\Windows\\explorer.exe", "N/A"},
+//         {6676, "C+G", "C:\\Windows\\System32\\DriverStore\\FileRepository\\nv_dispi.inf_amd64_neutral_hash\\Display.NvContainer\\NVDisplay.Container.exe", "N/A"},
+//         {6700, "C+G", "C:\\Windows\\System32\\DriverStore\\FileRepository\\nv_dispi.inf_amd64_neutral_hash\\Display.NvContainer\\NVDisplay.Container.exe", "N/A"}
+//     };
+
+//     for (const auto& proc : processes) {
+//         std::string display_name = truncate_text(proc.name, 38);
+        
+//         std::cout << "|    0   N/A  N/A    " 
+//                   << std::setw(6) << std::right << proc.pid << "   "
+//                   << std::setw(4) << std::right << proc.type << "   "
+//                   << std::setw(38) << std::left << display_name << "    "
+//                   << std::setw(3) << std::left << proc.memory << "      |\n";
+//     }
+//     std::cout << "+=======================================================================================+\n\n";
+// }
+
+void Console::show_nvidia_smi_dummy() const {
+    std::time_t now = std::time(nullptr);
+    char time_str[100];
+    std::strftime(time_str, sizeof(time_str), "%a %b %d %H:%M:%S %Y", std::localtime(&now));
+    
+    std::cout << "+---------------------------------------------------------------------------------------+\n";
+    std::cout << "| " << std::setw(20) << std::left << truncate_text("NVIDIA-SMI 546.92", 20)
+              << " " << std::setw(22) << std::left << truncate_text("Driver Version: 546.92", 22)
+              << " " << std::setw(20) << std::left << truncate_text("CUDA Version: 12.3", 20) << " |\n";
+    std::cout << "|-----------------------------------------+----------------------+----------------------+\n";
+
+    // GPU Status Header
+    std::cout << "| " << std::setw(30) << std::left << "GPU  Name"
+              << " " << std::setw(8) << std::left << "TCC/WDDM"
+              << " | " << std::setw(18) << std::left << "Bus-Id"
+              << " | " << std::setw(18) << std::left << "Volatile Uncorr. ECC" << " |\n";
+
+    // GPU Status Values (with truncation)
+    std::cout << "| " << std::setw(30) << std::left << truncate_text("NVIDIA GeForce RTX 3060", 30)
+              << " " << std::setw(8) << std::left << truncate_text("WDDM", 8)
+              << " | " << std::setw(18) << std::left << truncate_text("00000000:01:00.0", 18)
+              << " | " << std::setw(18) << std::left << truncate_text("N/A", 18) << " |\n";
+
+    // GPU Utilization Header
+    std::cout << "| " << std::setw(3) << std::left << "Fan"
+              << " " << std::setw(4) << std::left << "Temp"
+              << " " << std::setw(6) << std::left << "Perf"
+              << " " << std::setw(14) << std::left << "Pwr:Usage/Cap"
+              << " | " << std::setw(18) << std::left << "Memory-Usage"
+              << " | " << std::setw(18) << std::left << "GPU-Util" << " |\n";
+
+    // GPU Utilization Values (with truncation)
+    std::cout << "| " << std::setw(3) << std::left << truncate_text("N/A", 3)
+              << " " << std::setw(4) << std::left << truncate_text("43C", 4)
+              << " " << std::setw(6) << std::left << truncate_text("P5", 6)
+              << " " << std::setw(14) << std::left << truncate_text("21W / 95W", 14)
+              << " | " << std::setw(18) << std::left << truncate_text("1308MiB / 6144MiB", 18)
+              << " | " << std::setw(18) << std::left << truncate_text("20%", 18) << " |\n";
+    std::cout << "|                                         |                      |                      |\n";
+    std::cout << "+-----------------------------------------+----------------------+----------------------+\n\n";
+
+    std::cout << "+---------------------------------------------------------------------------------------+\n";
+    std::cout << "|  Processes:                                                                           |\n";
+    std::cout << "|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |\n";
+    std::cout << "|        ID   ID                                                             Usage      |\n";
+    std::cout << "+=======================================================================================+\n";
+
+    struct Process {
+        int pid;
+        std::string type;
+        std::string name;
+        std::string memory;
+    };
+    
+    std::vector<Process> processes = {
+        {1368, "C+G", "C:\\Windows\\System32\\dwm.exe", "1395MiB"},
+        {2116, "C+G", "C:\\Users\\User\\AppData\\Local\\Packages\\Microsoft.XboxGamingOverlay_8wekyb3d8bbwe\\xboxGameBarWidgets.exe", "422MiB"},
+        {4224, "C+G", "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe", "785MiB"},
+        {5684, "C+G", "C:\\Windows\\explorer.exe", "210MiB"},
+        {6676, "C+G", "C:\\Windows\\System32\\DriverStore\\FileRepository\\nv_dispi.inf_amd64_neutral_hash\\Display.NvContainer\\NVDisplay.Container.exe", "85MiB"}
+    };
+
+    for (const auto& proc : processes) {
+        std::cout << "|    0   N/A  N/A    " 
+                  << std::setw(6) << std::right << proc.pid << "   "
+                  << std::setw(4) << std::right << truncate_text(proc.type, 4) << "   "
+                  << std::setw(38) << std::left << truncate_text(proc.name, 38) << "    "
+                  << std::setw(8) << std::left << truncate_text(proc.memory, 8) << " |\n";
+    }
+    std::cout << "+=======================================================================================+\n\n";
+}
+
 void Console::run() {
     enable_virtual_terminal_processing();
     print_header();
@@ -135,6 +259,9 @@ void Console::run() {
             }
             else if (input == "report-util") {
                 std::cout << "report-util command recognized. Doing something...\n";
+            }
+            else if (input == "nvidia-smi") {
+                show_nvidia_smi_dummy();
             }
             else if (input.rfind("screen", 0) == 0) {
                 handle_screen_command(input);

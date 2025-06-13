@@ -3,6 +3,7 @@
 #include <map>
 #include "process.hpp"
 #include "utils.hpp"    
+#include "scheduler.hpp"
 
 class Console {
 private:
@@ -14,6 +15,8 @@ private:
     void print_header() const;
     void show_help() const;
     void show_nvidia_smi_dummy() const;
+
+    Scheduler scheduler;
     
 public:
     void run();

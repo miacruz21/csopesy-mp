@@ -67,6 +67,17 @@ void Console::handle_screen_command(const std::string& command) {
                       << (screen.is_finished() ? "finished" : "running") << ")\n";
         }
     }
+        
+    // Add scheduler processes
+    auto bg_processes = scheduler.get_processes_status();
+    if (!bg_processes.empty()) {
+        std::cout << "\nBackground Processes:\n";
+        for (const auto& [name, finished] : bg_processes) {
+            std::cout << "- " << name << " (" 
+                      << (finished ? "finished" : "running") << ")\n";
+        }
+    }
+
     else if (command.rfind("screen -s ", 0) == 0) {
         std::string name = command.substr(10);
         if (screens.count(name) == 0) {
@@ -245,6 +256,13 @@ void Console::run() {
             if (input == "initialize") {
                 std::cout << "initialize command recognized. Initializing system...\n";
                 initialized = true;
+                
+                // Create 10 processes with 100 print commands each
+                for (int i = 1; i <= 10; i++) {
+                    std::string name = "process_" + std::to_string(i);
+                    scheduler.add_process(new Process(name, i));
+                }
+
             }
             else {
                 std::cout << "Error: You must initialize first with 'initialize' command\n";
@@ -258,7 +276,8 @@ void Console::run() {
                 std::cout << "scheduler-stop command recognized. Doing something...\n";
             }
             else if (input == "report-util") {
-                std::cout << "report-util command recognized. Doing something...\n";
+                std::cout << "report-util command recognized. Generating report...\n";
+                // Implementation would go here
             }
             else if (input == "nvidia-smi") {
                 show_nvidia_smi_dummy();

@@ -2,12 +2,14 @@
 #include <string>
 #include <map>
 #include "process.hpp"
-#include "utils.hpp"    
+#include "utils.hpp"   
+#include "process_manager.hpp" 
 
 class Console {
 private:
     std::map<std::string, ProcessScreen> screens;
     bool initialized = false;
+    ProcessManager* process_manager;
 
     void clear_screen() const;
     void handle_screen_command(const std::string& command);
@@ -17,4 +19,5 @@ private:
     
 public:
     void run();
+    void set_process_manager(ProcessManager* pm) { process_manager = pm; };
 };

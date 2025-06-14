@@ -5,7 +5,6 @@
 #include <windows.h>
 #endif
 
-// Enable ANSI escape codes on Windows
 void enable_virtual_terminal_processing() {
 #ifdef _WIN32
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -49,11 +48,11 @@ void Console::print_header() const {
 void Console::show_help() const {
     std::cout << "Available commands:\n"
               << "  initialize - Initialize system\n"
-              << "  screen -s <name> - Create new screen\n"
-              << "  screen -r <name> - Attach to screen\n"
-              << "  screen -ls - List screens\n"
-              << "  scheduler-start - Start process generation\n"
-              << "  scheduler-stop - Stop process generation\n"
+              << "  screen -s <name> - Create new process screen\n"
+              << "  screen -r <name> - Attach to process screen\n"
+              << "  screen -ls - List all processes\n"
+              << "  scheduler-start - Start scheduler\n"
+              << "  scheduler-stop - Stop scheduler\n"
               << "  report-util - Generate utilization report\n"
               << "  clear - Refresh console\n"
               << "  exit - Quit program\n";
@@ -61,37 +60,52 @@ void Console::show_help() const {
 
 void Console::handle_screen_command(const std::string& command) {
     if (command == "screen -ls") {
-        std::cout << "\nActive Screens:\n";
-        for (const auto& [name, screen] : screens) {
-            std::cout << "- " << name << " (" 
-                      << (screen.is_finished() ? "finished" : "running") << ")\n";
+        std::cout << "\n";
+        if (process_manager) {
+            process_manager->print_system_status();
+        } else {
+            std::cout << "Process manager not initialized\n";
         }
     }
     else if (command.rfind("screen -s ", 0) == 0) {
         std::string name = command.substr(10);
-        if (screens.count(name) == 0) {
-            screens.emplace(std::piecewise_construct,
-                          std::forward_as_tuple(name),
-                          std::forward_as_tuple(name));
-            clear_screen();
-            screens.at(name).interact();
-            clear_screen();
+        if (!process_manager) {
+            std::cout << "Process manager not initialized\n";
+            return;
+        }
+        
+        if (process_manager->get_process(name)) {
+            std::cout << "Error: Process '" << name << "' already exists\n";
         } else {
-            std::cout << "Error: Screen '" << name << "' already exists\n";
+            // Create new process with 100 instructions
+            process_manager->add_process(name, 100);
+            std::cout << "Created process '" << name << "' with 100 instructions\n";
+            
+            // Enter the process screen
+            clear_screen();
+            ProcessScreen* process = process_manager->get_process(name);
+            process->interact();
+            clear_screen();
         }
     }
     else if (command.rfind("screen -r ", 0) == 0) {
         std::string name = command.substr(10);
-        if (screens.count(name)) {
-            if (!screens.at(name).is_finished()) {
+        if (!process_manager) {
+            std::cout << "Process manager not initialized\n";
+            return;
+        }
+        
+        ProcessScreen* process = process_manager->get_process(name);
+        if (process) {
+            if (!process->is_finished()) {
                 clear_screen();
-                screens.at(name).interact();
+                process->interact();
                 clear_screen();
             } else {
                 std::cout << "Error: Process '" << name << "' has finished\n";
             }
         } else {
-            std::cout << "Error: Screen '" << name << "' not found\n";
+            std::cout << "Error: Process '" << name << "' not found\n";
         }
     }
     else {
@@ -242,11 +256,18 @@ void Console::run() {
             clear_screen();
         }
         else if (!initialized) {
-            if (input == "initialize") {
-                std::cout << "initialize command recognized. Initializing system...\n";
+           if (input == "initialize") {
                 initialized = true;
-            }
-            else {
+                
+                for (int i = 1; i <= 10; ++i) {
+                    std::string name = "process_" + std::to_string(i);
+                    process_manager->add_process(name, 100);
+                }
+                process_manager->print_system_status();
+                process_manager->start_scheduler();
+                std::cout << "Scheduler started (FCFS with 4 cores)\n";
+
+            } else {
                 std::cout << "Error: You must initialize first with 'initialize' command\n";
             }
         }

@@ -279,7 +279,8 @@ void Console::run() {
                 std::cout << "scheduler-stop command recognized. Doing something...\n";
             }
             else if (input == "report-util") {
-                std::cout << "report-util command recognized. Doing something...\n";
+                std::cout << "report-util command recognized. Generating report...\n";
+                // Implementation would go here
             }
             else if (input == "nvidia-smi") {
                 show_nvidia_smi_dummy();

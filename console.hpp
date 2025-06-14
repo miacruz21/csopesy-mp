@@ -17,8 +17,7 @@ private:
     void show_help() const;
     void show_nvidia_smi_dummy() const;
 
-    Scheduler scheduler;
-    
+
 public:
     void run();
     void set_process_manager(ProcessManager* pm) { process_manager = pm; };
